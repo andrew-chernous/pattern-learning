@@ -21,31 +21,11 @@
 // escalated errors
 
 
-class PurchaseIterator {
-  #items;
-  #index;
-
-  constructor(items) {
-    this.#items = items;
-    this.#index = 0;
+const createPurchaseIterator = async function* (items) {
+  for (const item of items) {
+    yield item;
   }
-
-  static create(items) {
-    return new PurchaseIterator(items);
-  }
-
-  [Symbol.asyncIterator]() {
-    return this;
-  }
-
-  async next() {
-    const index = this.#index++;
-    if (index < this.#items.length) {
-      return { done: false, value: this.#items[index] };
-    }
-    return { done: true, value: undefined };
-  }
-}
+};
 
 class Basket {
   #items;
@@ -96,7 +76,7 @@ const purchase = [
 ];
 
 const main = async () => {
-  const goods = PurchaseIterator.create(purchase);
+  const goods = createPurchaseIterator(purchase);
   const basket = new Basket({ limit: 1050 }, (items, total) => {
     console.log(total);
   });
